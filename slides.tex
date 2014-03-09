@@ -8,6 +8,7 @@
 \usepackage{ctex,amsmath,amssymb,enumerate,epsfig,bbm,calc,color,ifthen,capt-of}
 \usepackage{url} 
 \usepackage{hyperref} 
+\usepackage{geometry}
 
 \usetheme{Berlin}
 %\usecolortheme{mit}
@@ -19,6 +20,8 @@
 \date{\today}
 \pgfdeclareimage[height=0.25cm]{mit-logo}{tencent_alpha.png}
 \logo{\pgfuseimage{mit-logo}\hspace*{0.1cm}}
+
+%\setlist[itemize]{noitemsep}
 
 \AtBeginSection[]
 {
@@ -41,28 +44,29 @@
 
 % -----------------------------------------------------------------------------
 \section{背景}
+\subsection{}
 \begin{frame}{多屏时代的挑战}
 \begin{itemize}
-\pause
-\item 多种平台\\ \pause
-\includegraphics[height=1.6cm]{fig/PCs.png}\hspace*{0.1cm}\pause
-\includegraphics[height=1.6cm]{fig/mobile-bc.png}\hspace*{0.1cm}\pause
-\includegraphics[height=1.6cm]{fig/streaming-bc.png}
-\item 多种屏幕大小\\ \pause
-\includegraphics[height=1.2cm]{fig/screen_sizes.jpg}\hspace*{0.1cm}\pause
-\includegraphics[height=2cm]{fig/480_to_4KVideo.jpg}\hspace*{0.1cm}\pause
-\includegraphics[height=2cm]{fig/4k_video.jpg}
+%\pause
+\item 多种平台\\ %\pause
+\includegraphics[height=1.6cm]{fig/PCs.png}\pause
+\includegraphics[height=1.0cm]{fig/mobile-bc.png}\pause
+\includegraphics[height=1.1cm]{fig/streaming-bc.png}\pause
+\includegraphics[height=1.6cm]{fig/video_quality-bc.png} \pause
+\item 多种屏幕大小\\ %\pause
+\includegraphics[height=1.2cm]{fig/screen_sizes.jpg}\pause
+\includegraphics[height=2.2cm]{fig/480_to_4KVideo.jpg}\pause
+\includegraphics[height=2.2cm]{fig/4k_video.jpg} \pause
 \end{itemize}
 \end{frame}
 \begin{frame}{多屏时代的挑战} 
-\begin{itemize}  
-\pause
-\item 多种码率\\ 
-\includegraphics[height=2cm]{fig/bitrate_tencent.png}\hspace*{0.1cm}\pause
-\includegraphics[height=2cm]{fig/bitrate_youku.png}\hspace*{0.1cm}\pause
-\includegraphics[height=2cm]{fig/bitrate_sohu.png}\hspace*{0.1cm}\pause
-\includegraphics[height=2cm]{fig/bitrate_qiyi.png}\pause   
-\item 多种解码能力\\ 
+\begin{itemize}
+\item 多种码率\\ %\pause
+\includegraphics[height=1.9cm]{fig/bitrate_tencent.png}\hspace*{0.4cm}\pause
+\includegraphics[height=1.9cm]{fig/bitrate_youku.png}\hspace*{0.4cm}\pause
+\includegraphics[height=1.9cm]{fig/bitrate_sohu.png}\hspace*{0.4cm}\pause
+\includegraphics[height=1.9cm]{fig/bitrate_qiyi.png}\pause   
+\item 多种解码能力\\ %\pause
 %\begin{table}
 {\scriptsize
 \begin{center}
@@ -79,257 +83,218 @@ HEVC Decode   &  N/A &  N/A  & 720P@30fps  & 720P@30fps \\
 }
 \end{center}
 %\end{table}
-\pause
-\item 多种封装容器支持\\
-\item 多种编码标准支持\\
-
-\item 巨头角力\\
-\includegraphics[height=3cm]{fig/competition.png}\pause
 \end{itemize}
 \end{frame}
-\begin{frame}{目标与约束}
+\begin{frame}{多屏时代的挑战} 
 \begin{itemize}
-\item 十一假期基本完成
-\item 回来后合并
-\item alan: 总体，关键算法
-\item roshan: 统领协调整理，后台架构设计
-\item xiaojun, edge: 整理以往代码，补充
-\item michael: 搜索相关，自然语言理解
-\item molly: 后勤，其他
+\item 不同封装容器支持\\ %\pause
+mp4, mkv, avi, flv, wmv, rmvb, webm, mpeg-ts... \pause
+\item 不同编码标准支持\\ \pause
+H.264(AVC), H.265(HEVC), VC-1, AVS, VP8/9, RealVideo...
+\pause
+\includegraphics[height=3.5cm]{fig/encoding_standards.png}\pause
 \end{itemize}
 \end{frame}
-\begin{frame}{目标与约束}
-\includegraphics[scale=0.38]{fig/team7.jpg}
+\begin{frame}{多屏时代的挑战} 
+\begin{itemize}
+\item 巨头角力\\ %\pause
+\includegraphics[height=5cm]{fig/competition.jpg}\pause
+\end{itemize}
 \end{frame}
-\begin{frame}{工欲善其事，必先利其器}
-What 利器?
+\begin{frame}{幸运的是，}
+\pause
+决大多数设备都支持：
 \pause
 \begin{itemize}
-\item \LaTeX{} with a patent template
-\item Evernote \&QQMail
-\item Dropbox \& WeiYun
-\item ACM Digital Library \url{http://dl.acm.org}
-\item SOOPAT \url{http://soopat.com} 
-\item Google Patents \url{http://patents.google.com}
-\item BibTeX to manage the references
+\item 编码标准\\ \pause
+H.264/AVC (ISO/IEC 14496-10;  ITU-T H.264; MPEG-4 Part 10).
+\item 封装容器\\ \pause
+MP4 (ISO/IEC 14496-14; MPEG-4 Part 14).
+\end{itemize}
+\pause
+所以，我们需要把用户/编辑上传的各种不同封装、不同编码的，一般码率比较高的源视频转成若干种适合不同设备的不同码率的H.264编码、MP4封装的视频。
+\end{frame}
+\begin{frame}{但是，}
+\pause
+\begin{itemize}
+\item 媒体转码是件及其消耗计算资源的工作\\ %\pause
+	尤其视频编码，对于目前常见的支持SSE4指令集的x86/x64 CPU的机器：
+	\begin{itemize}
+	\item  编码H.264视频需要耗费播放时长的1/3到2/3
+	\item  编码H.265视频需要耗费播放时长的30+倍
+	\item  单个CPU核通常最多可跑1--2个编码任务
+	\end{itemize}
+\item 媒体文件大，再加上多码率副本，极其消耗存储
+\item 潜在的带宽消耗
 \end{itemize}
 \end{frame}
-\begin{frame}{整体架构}
 
-\end{frame}
-\begin{frame}{投影拟合}
-
-\end{frame}
-\begin{frame}{投影拟合}
-
-\end{frame}
-\begin{frame}{投影拟合}
+\begin{frame}{解决}
+\pause
+Criteria： \pause
 \begin{itemize}
-\item 好不容易弄到一张符合要求的矢量地图
-\item 发现该地图所采用的投影方法和高斯-克吕格尔投影、Lambert投影都有些接近
-\item 但无论怎么调整参数，总存在稍许旋转、拉伸和扭曲
-\end{itemize}
-\pause 准确坐标和近似投影的坐标的关系：\pause 
-\begin{itemize}
-	\item 若仅有平移差别，那么x,y分别只是m\_x,m\_y的线性函数
-	\item 若仅有两个方向上的拉伸，则$x = f(m\_x); y = g(m\_y)$
-	\item 若存在旋转变换，甚至非仿射变换，则$x = f(m\_x, m\_y); y = g(m\_x, m\_y)$
-\end{itemize}
-\end{frame}
-\begin{frame}{投影拟合}
-\begin{center}
-
-\end{center}
-The RBF model is
-\begin{equation}
-f(x)=\sum_{i=1}^n \alpha_i g(\norm{x-x_i}).
-\end{equation}
-The output is a linear combination of non-linear functions of the input.  The non-linearity is a function of distance only.
-\end{frame}
-\begin{frame}{RBF neutral network}
-An RBF is the solution to the following interpolation problem:
-\begin{equation}
-\min \sum_{i=1}^n L(f(x_i),y_i) + \lambda \norm{f}_H.
-\end{equation}
-\begin{equation}
-\min \: \norm{f}_H \quad\text{st.}\quad f(x_i)=y_i, \quad i=1,2,...,n.
-\end{equation}
-
-This is similar to a kernel density, except that the coefficients $\alpha_i$ are not restricted to a convex combination, and the basis function $g$ does not have to be a density.
-\end{frame}
-\begin{frame}  
-\begin{equation}
-E = 1/2 \sum_i \int (y(x_i+z)-y_i)^2 p(z) dz
-\end{equation}
-Let
-\begin{equation}
-f(x) = y(x) + \eta(x)
-\end{equation}
-\begin{align}
-E(f) & = 1/2 \sum_i \int (y(x_i+z) + \eta(x_i+z) - y_i)^2 p(z) dz \\
-& \approx 1/2 \sum_i \int (y(x_i+z) - y_i)^2 + 2(y(x_i+z)+\eta(x_i+z)-y_i)\eta(x_i+z) p(z) dz \\
-\end{align}
-\begin{equation}
-\delta E = \sum_i \int (y(x_i+z)-y_i)\eta(x_i+z) p(z) dz = 0
-\end{equation}
-\end{frame}
-\begin{frame}
-Let $\eta(x)=\delta(x-u)$.
-\begin{align}
-\delta E & = \sum_i \int (y(x_i+z)-y_i)\delta(x_i+z-u) p(z) dz \\
-& = \sum_i (y(u)-y_i) p(u-x_i) = 0\\
-y(u)\sum_i p(u-x_i) & = \sum_i y_i p(u-x_i) \\
-y(u) & = \sum_i y_i \frac{p(u-x_i)}{\sum_j p(u-x_j)}
-\end{align}
-\end{frame}
-\begin{frame}
-\pause 
-近似投影：$\forall Proj_k, k \in \{1, 2, \ldots, P\}$\\
-\pause 
-基于曲率的角点检测，得到：\\
-$(x_{ik}, y_{ik}), i \in \{1, 2, \ldots, M_k\},  k \in \{1, 2, \ldots, P\}$\\
-\pause 
-取相同数目$N$个对应角点，目标：
-\begin{equation}
-\arg \min \sum_{i=1}^{N}{[(x_i - x_{ik})^2 + (y_i - y_{ik})^2]}, k \in \{1, 2, \ldots, P\}
-\end{equation}
-\pause 
-注意：
-别人用RBF NN来做插值/拟合、分类器，而我们用它来消除误差，得到了很高的精度\\
-Trial-and-error: 10+ times
-\end{frame}
-\begin{frame}{地址匹配与规整}
-
-\end{frame}
-\begin{frame}{地址状态机}
-
-\end{frame}
-\begin{frame}{IP库合并}
-
-\pause 存储：一级Hash Array；二级一阶KD-Tree。\pause 考虑事实：
-\begin{enumerate}
-\item 拥有完整A类地址段的单位只有AT\&T、IBM、MIT；
-\item 同一地域的IP段往往正好是一个完整的B类或C类地址（更精确地讲是一段内的所有IP高2或3字节相同）。
-\end{enumerate}
-\end{frame}
-\begin{frame}{日志分析}
-
-\end{frame}
-\begin{frame}{前端处理---偏移分布}
-
-\end{frame}
-\begin{frame}{Acknowledgement}
-\begin{itemize}
-\item  Some of the ideas were from: 
-
-“腾讯星云”团队
-\item  Thanks for insightful discussions with: 
-
-Nicholas Li
-\item Library Support from: 
-
-Sergey Anatolyevich Bochkanov (Russia)
+\item 单机内\\
+	\begin{itemize}
+	\item 功能划分、数据局部性\\
+	宏块组粒度的并行
+	\item 内存访问、CPU核心/Cache拓扑结构和转码格式\\
+	帧级或GOP（图像组）级并行\\
+	对NUMA机器特别友好
+	\end{itemize}
+\item 分布式转码
+	\begin{itemize}
+		\item 存储
+		\item 路由
+		\item 任务调度
+	\end{itemize}
 \end{itemize}
 \end{frame}
 
 % -----------------------------------------------------------------------------
-\section{腾讯研究院Transcoder}
-\subsection{Cloud Transcoding Reusing Idle Computing Resources}
-\begin{frame}{Distributed Transcoding on MapReduce}
-Gale Huang, Zhenhua Li, et al. Cloud transcoder: bridging the format and resolution gap between internet videos and mobile devices. ACM NOSSDAV 2012. 
-\textbf{\includegraphics[scale=0.40]{fig/cloud_transcoder_nossdav_affiliation.png}}
+\section{从Cloud Transcoder到TranscX}
+\subsection{前腾讯研究院Cloud Transcoder}
+\begin{frame}{前腾讯研究院Cloud Transcoder}
+\textbf{Done 2011-. Gale Huang et al. Cloud transcoder: bridging the format and resolution gap between internet videos and mobile devices. ACM NOSSDAV 2012.}\\\pause
+\begin{center}
+\includegraphics[height=2.8cm]{fig/clouder-transcoder_principle.png}\\\pause
+\includegraphics[scale=0.36]{fig/cloud_transcoder_nossdav_affiliation.png}
+\end{center}
+\end{frame}
 
-
-
+\begin{frame}
+\begin{center}
+\includegraphics[width=11.5cm]{fig/cloud-transcoder_arch.png}
+\end{center}
 \end{frame}
 \begin{frame}
-\includegraphics[scale=0.33]{fig/总体方案.pdf}\hspace*{0.1cm}
-\includegraphics[scale=0.44]{fig/reduce.pdf}
+\begin{center}
+\includegraphics[width=11.5cm]{fig/cloud-transcoder_arch_details.png}
+\end{center}
 \end{frame}
+\begin{frame}
+\begin{center}
+\includegraphics[width=10cm]{fig/cloud-cache_hardware.png}
+\end{center}
+\end{frame}
+\subsection{架平流媒体TranscX}
+\begin{frame}{架平流媒体TranscX}
+TranscX: 
+\begin{itemize}
+	\item Transcoding eXpress/eXperience/eXtreme... 
+	\item transc(x)
+\end{itemize}
 
-\begin{frame}{Distributed Transcoding on MapReduce}
 \begin{center}
 \includegraphics[scale=0.22]{fig/GOP.pdf}
 \end{center}
 \begin{itemize}
 \item GOP-level parallelism without REAL splitting
+\end{itemize}
+\end{frame}
+\begin{frame}
+\begin{itemize}
 \item Job/Map/Thread, accurate control and CPU \& I/O limitation
 \item Real-time support for DASH and Live Broadcasting
 \item Migration from Computing to Storage: soul of cloud tech
-\item It later supported WeChat and part of Tencent Video
+\item It later supported WeChat, Qzone and Weishi
+\item 用MapReduce框架统一了起来，减少了调度的复杂性，增强了可扩展性
+\item 复用了存储服务器的空间计算资源，节省了成本
 \end{itemize}
 \end{frame}
 
-\subsection{Fast Traversal, Scanning and Deletion on Common Disk FS; Fast Replacement on CDN Edge Nodes without Indexes}
-\begin{frame}{Traversal}
-\includegraphics[scale=0.4]{fig/fs_traversal.pdf}\hspace*{0.1cm}
-\includegraphics[scale=0.38]{fig/read_dir.pdf}\hspace*{0.1cm}
-\includegraphics[scale=0.3]{fig/seek_rotate.png}
+\begin{frame}
+\includegraphics[scale=0.33]{fig/TranscX.pdf}\hspace*{0.1cm}
+\includegraphics[scale=0.33]{fig/TranscX_detail.pdf}
 \end{frame}
 
-%\subsection{}
-\begin{frame}{Power-Law(Zip'f) Distribution}
-\includegraphics[scale=0.4]{fig/mp4.png}\hspace*{0.1cm}
-\includegraphics[scale=0.4]{fig/ts.png}
-\end{frame}
-\begin{frame}{Cumulative Distribution Function (CDF)}
-\includegraphics[scale=0.4]{fig/mp4_cdf.png}\hspace*{0.1cm}
-\includegraphics[scale=0.4]{fig/ts_cdf.png}
-\end{frame}
-\begin{frame}{Distance and ...}
-\includegraphics[scale=0.4]{fig/freq_dist.png}\hspace*{0.1cm}
-\includegraphics[scale=0.4]{fig/distance_cdf.png}
-\end{frame}
-\begin{frame}{i to i+1}
-\includegraphics[scale=0.67]{fig/i_to_next_ratio_cdf.png}
-\end{frame}
-\begin{frame}{One of the Effects}
-\includegraphics[scale=0.4]{fig/back_src_news.png}
-\end{frame}
-\begin{frame}{One of the Effects}
-\includegraphics[scale=0.4]{fig/back_src_all.png}
-\end{frame}
-
-\section{Conclusions \& Experience}
-\subsection{How to obtain new ideas?}
-\begin{frame}{How to obtain new ideas?}
-While working...
+\section{DASH与稳定婚姻}
+\subsection{DASH}
+\begin{frame}{Why DASH?}
+DASH: Dynamic Adaptive Streaming over HTTP.
 \pause
 \begin{itemize}
-\item Think more，多想
-\item Try more，勇于尝试，经得起多次失败
-\item Retrieve more，避免闭门造车，侧重别人没做过或做得不好的方面
-\item Teamwork，每个人都有自己擅长的领域+臭皮匠理论
-\end{itemize}
-
-\end{frame}
-
-\subsection{How to write good patent applications?}
-\begin{frame}{How to write good patent applications?}
-Something look like paradoxes...
-\pause 
-\begin{itemize}
-\item 数理逻辑和推理不能够成为专利
-
-但有一些数理支持会为专利增色不少
-\item 纯粹的算法不能够成为专利
-
-但结合具体问题、设备的算法往往能够成为高质量的专利
-\item 专利不需要数据测量和效果数据
-
-但详尽的数据测量会提供方法论上的支持，而效果数据则会提供更强的意义支撑
+\item 庞大的文件头，导致在线播放时较大的initial/VCR delay
+\includegraphics[height=4cm]{fig/MP4_boxes_detail.jpg}
+\includegraphics[height=4cm]{fig/fragmented_mp4.jpg}
 \end{itemize}
 \end{frame}
-
-\begin{frame}{How to write good patent applications?}
+\begin{frame}
 \begin{itemize}
-\item 发明专利必须具有新颖性的内容，该技术领域中具有中等知识的人所不能演绎出的创造性步骤
+\item 非平滑的码率间切换 due to varying download speed
+\includegraphics[height=4.5cm]{fig/download_speed.png}
+\end{itemize}
+\end{frame}
+\begin{frame}{DASH}
+DASH: Dynamic Adaptive Streaming over HTTP. \\
+几种DASH标准：
+\pause
+\begin{itemize}
+\item Apple HLS (HTTP Live Streaming) 2009
+\item Microsoft HSS (HTTP Smooth Streaming) 2010
+\item Adobe HDS (HTTP Dynamic Streaming) 2010
+\item MPEG-DASH (ISO/IEC 23009-1) 2012
+\end{itemize}
+\end{frame}
+\begin{frame}{Apple HLS}
+\begin{itemize}
+\item Architecture
+\begin{center}
+\includegraphics[height=4.5cm]{fig/hls_arch.jpg}
+\end{center}
+\end{itemize}
+\end{frame}
+\begin{frame}{Apple HLS}
+\begin{itemize}
+\item Segment Indexing
+\begin{center}
+\includegraphics[height=4.5cm]{fig/hls_indexing.jpg}
+\end{center}
+\end{itemize}
+\end{frame}
 
-但现在这个时代，真正具有创新性的东西太少了。所谓创新无非是：用新方法解决旧问题；或用其他领域的非新方法解决新问题。
-所以就要求人涉猎广泛、融会贯通。
-\item 我们显然没有足够的时间来撰写专利
+\begin{frame}{MPEG-DASH}
+\begin{itemize}
+\item Architecture
+\includegraphics[height=4.5cm]{fig/MPEG-DASH_arch.png}
+\end{itemize}
+\end{frame}
+\begin{frame}{MPEG-DASH}
+\begin{itemize}
+\item Data Model
+\includegraphics[height=4.5cm]{fig/mpeg-dash_data_model.png}
+\end{itemize}
+\end{frame}
+\begin{frame}{MPEG-DASH}
+\begin{itemize}
+\item Segment Indexing
+\includegraphics[height=5cm]{fig/mpeg-dash_indexing.png}
+\end{itemize}
+\end{frame}
 
-但一个自我感觉良好的专利需要至少一个月的业余时间
+\begin{frame}{架平流媒体对DASH的使用}
+\begin{itemize}
+\item 尽量只转封装，不转编码
+\item 实时、按需转封装/转码码
+\end{itemize}
+\end{frame}
+
+\subsection{稳定匹配}
+\begin{frame}{Motivation}
+对大数据的分析，得出结论：
+\begin{itemize}
+\item 用户对CDN的region选择存在偏好\\
+由于网络拓扑关系，用户去不同的CDN边缘节点下载的速率各不相同，而目前的调度算法，至少能得到一个次优解
+\item 不同不同地区的用户对码率存在偏好\\
+在前面次优解的前提下，不同地区得到的平均服务质量有显著差异
+\end{itemize}
+\end{frame}
+
+\begin{frame}{优化问题}
+\begin{itemize}
+\item 选择选择...\\
+to be written...
+\item 稳定稳定匹配\\
+to be written...
 \end{itemize}
 \end{frame}
 % -----------------------------------------------------------------------------

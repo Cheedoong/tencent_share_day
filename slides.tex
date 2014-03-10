@@ -180,15 +180,14 @@ Criteria： \pause
 \begin{frame}{架平流媒体TranscX}
 TranscX: 
 \begin{itemize}
-	\item Transcoding eXpress/eXperience/eXtreme... 
-	\item transc(x)
+	\item Transcoding eXpress/eXperience/eXtreme...; transc(x)
 \end{itemize}
-
 \begin{center}
-\includegraphics[scale=0.22]{fig/GOP.pdf}
+\includegraphics[scale=0.20]{fig/GOP.pdf}
 \end{center}
 \begin{itemize}
-\item GOP-level parallelism without REAL splitting
+\item GOP-level parallelism without REAL splitting\\
+Media head parsing, $<begin\_time, end\_time> or GOP\_id \rightarrow <start_offset, size>$
 \end{itemize}
 \end{frame}
 \begin{frame}
@@ -274,18 +273,48 @@ DASH: Dynamic Adaptive Streaming over HTTP. \\
 \begin{frame}{架平流媒体对DASH的使用}
 \begin{itemize}
 \item 尽量只转封装，不转编码
-\item 实时、按需转封装/转码码
+\item 实时、按需转封装/转码
+\item 使用/自写的多种协议，解决并发I/O流少的问题
+	\begin{description}
+	\item[tmpfs] 最简单、方便，对Cache管理要求不强的场合
+	\item[in\_mem] in memory, 进程内的编解码I/O
+	\item[shm\_mem] shared memory, 多进程的编解码I/O，可自定义Cache管理、淘汰算法
+	\item[AVIOContext] FFMPEG built-in
+	\item[async\_http] 适用直播，数据到达不可预期
+\end{description}
+\item FPGA HEVC Encoding (proposed)
 \end{itemize}
 \end{frame}
 
 \subsection{稳定匹配}
 \begin{frame}{Motivation}
-对大数据的分析，得出结论：
+DASH和Wechat, Weishi, Qzone等社交UGC视频转码中存在的问题：
 \begin{itemize}
-\item 用户对CDN的region选择存在偏好\\
-由于网络拓扑关系，用户去不同的CDN边缘节点下载的速率各不相同，而目前的调度算法，至少能得到一个次优解
-\item 不同不同地区的用户对码率存在偏好\\
-在前面次优解的前提下，不同地区得到的平均服务质量有显著差异
+\item 视频长度较短\\
+一般仅一个到若干个GOP，MapReduce时仅需要一个Mapper
+\item 但MapReduce任务调度的延时较大\\
+有时甚至超过播放时长。可通过Linux Container守护进程的实时MapReduce来缓解，但非根本解决之道
+\item 大部分视频的未来访问少于X次\\
+还有比较全码率转码+全量分发么？
+\end{itemize}
+\end{frame}
+\begin{frame}{Motivation}
+%对大数据的分析，得出结论：
+\begin{itemize}
+	\item 对数千台后台服务器连续一周运行状态的测量：\\
+		\begin{itemize}
+		\item 不仅DC，OC的多数服务器大部分时间CPU负载也较低\\
+		甚至包括某些HTTP服务器
+		\item 多数服务器的CPU负载基本不会出现突变\\
+		CPU负载随时间相对平稳，但不同地区的平均负载存在差异
+		\end{itemize}
+	\item 对应时间所有用户访问和调度情况的测量：\\
+		\begin{itemize}
+		\item 用户对CDN的region选择存在偏好\\
+		由于网络拓扑关系，用户去不同的CDN边缘节点下载的速率各不相同，而目前的调度算法，至少能得到一个次优解
+		\item 不同不同地区的用户对码率存在偏好\\
+		在前面次优解的前提下，不同地区得到平均服务质量有差异
+	\end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -295,6 +324,45 @@ DASH: Dynamic Adaptive Streaming over HTTP. \\
 to be written...
 \item 稳定稳定匹配\\
 to be written...
+\end{itemize}
+\end{frame}
+\begin{frame}{算法应用}
+准备与预测框架\\
+\begin{itemize}
+\item 用户对所有CDN边缘节点的偏好\\
+根据过去的测速数据来Rank用户对所有CDN边缘节点的偏好
+\item 每段视频未来一段时间的访问频率\\
+根据CDN到用户的带宽和过去一段时间用户的访问频次预测未来一段时间所有有可能有访问的视频的访问频次
+\item 未来一小段时间服务器的期望空间计算资源\\
+根据分工作日/周末两种自回归模型预测未来一段时间每个OC节点服务器的期望CPU负载
+\end{itemize}
+\end{frame}
+
+\section{Future Vision}
+\subsection{和一些新技术的结合}
+\begin{frame}{和一些新技术的结合}
+\begin{itemize}
+\item WebRTC\\
+Client-end caching \& delivery \& broadcasting
+\item HTML5 WebSocket, HTTP 2.0\\
+会话保持，多流传输
+\item Social Could TV\\
+\item SVC, MVC, HEVC, NC\\
+编码、多副本多版本机制、多视角、传输
+\end{itemize}
+\end{frame}
+\subsection{Acknowledgment}
+\begin{frame}{Acknowledgment}
+本slides中部分内容源自与以下人员的协作/交流：
+\begin{itemize}
+\item 架平流媒体\\
+Leon Ouyang, Devin Zeng, Guita Zhang, Kernel He, Chris Su
+\item Tsinghua-Tencent Joint Lab.\\ 
+Zhi Wang
+\item SNG社交平台部\\
+Stone Huang
+\item NTU\\
+Young Wen
 \end{itemize}
 \end{frame}
 % -----------------------------------------------------------------------------

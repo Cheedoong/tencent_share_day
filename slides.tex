@@ -45,6 +45,21 @@
 % -----------------------------------------------------------------------------
 \section{背景}
 \subsection{}
+\begin{frame}{互动}
+\begin{itemize}
+\item Q: 谁拥有以下设备之一？
+	\begin{itemize}
+	\item 小米3联通版、红米1S
+	\item 华为荣耀X1、荣耀3X
+	\item 三星Galaxy S4
+	\item Google/LG Nexus 5
+	\item LG G2
+	\item 酷派大神F1/8297、9976A
+	\end{itemize}
+\item  举过手的，恭喜大家！\\
+原因请继续听...
+\end{itemize}
+\end{frame}
 \begin{frame}{多屏时代的挑战}
 \begin{itemize}
 %\pause
@@ -67,6 +82,7 @@
 \includegraphics[height=1.9cm]{fig/bitrate_sohu.png}\hspace*{0.4cm}\pause
 \includegraphics[height=1.9cm]{fig/bitrate_qiyi.png}\pause   
 \item 多种解码能力\\ %\pause
+%！！！！！！m目前支持HEVC的手机：Galaxy S4, LG G2, Nexus5, 小米3联通版, 红米1S/2... 
 %\begin{table}
 {\scriptsize
 \begin{center}
@@ -103,7 +119,7 @@ H.264(AVC), H.265(HEVC), VC-1, AVS, VP8/9, RealVideo...
 \end{frame}
 \begin{frame}{幸运的是，}
 \pause
-决大多数设备都支持：
+绝大多数设备都支持：
 \pause
 \begin{itemize}
 \item 编码标准\\ \pause
@@ -117,7 +133,7 @@ MP4 (ISO/IEC 14496-14; MPEG-4 Part 14).
 \begin{frame}{但是，}
 \pause
 \begin{itemize}
-\item 媒体转码是件及其消耗计算资源的工作\\ %\pause
+\item 媒体转码是件极其消耗计算资源的工作\\ %\pause
 	尤其视频编码，对于目前常见的支持SSE4指令集的x86/x64 CPU的机器：
 	\begin{itemize}
 	\item  编码H.264视频需要耗费播放时长的1/3到2/3
@@ -190,6 +206,50 @@ TranscX:
 Media head parsing, $<begin\_time, end\_time> or GOP\_id \rightarrow <start_offset, size>$
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\begin{itemize}
+\item I\\
+\includegraphics[scale=0.40]{fig/cjk1.jpg}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\begin{itemize}
+\item B\\
+\includegraphics[scale=0.40]{fig/cjk2.jpg}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\begin{itemize}
+\item B\\
+\includegraphics[scale=0.40]{fig/cjk3.jpg}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\begin{itemize}
+\item P\\
+\includegraphics[scale=0.40]{fig/cjk4.jpg}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\begin{itemize}
+\item I： IDR\\
+\includegraphics[scale=0.40]{fig/bfj1.jpg}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\begin{itemize}
+\item B\\
+\includegraphics[scale=0.40]{fig/bfj2.jpg}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\begin{itemize}
+\item B...\\
+\includegraphics[scale=0.40]{fig/bfj3.jpg}
+\end{itemize}
+\end{frame}
+
 \begin{frame}
 \begin{itemize}
 \item Job/Map/Thread, accurate control and CPU \& I/O limitation
@@ -202,8 +262,14 @@ Media head parsing, $<begin\_time, end\_time> or GOP\_id \rightarrow <start_offs
 \end{frame}
 
 \begin{frame}
-\includegraphics[scale=0.33]{fig/TranscX.pdf}\hspace*{0.1cm}
-\includegraphics[scale=0.33]{fig/TranscX_detail.pdf}
+\begin{center}
+\includegraphics[height=6.4cm]{fig/TranscX.pdf}
+\end{center}
+\end{frame}
+\begin{frame}
+\begin{center}
+\includegraphics[height=6.2cm]{fig/TranscX_detail.pdf}
+\end{center}
 \end{frame}
 
 \section{DASH与稳定婚姻}
@@ -219,8 +285,8 @@ DASH: Dynamic Adaptive Streaming over HTTP.
 \end{frame}
 \begin{frame}
 \begin{itemize}
-\item 非平滑的码率间切换 due to varying download speed
-\includegraphics[height=4.5cm]{fig/download_speed.png}
+\item 非平滑的码率间切换 due to varying download speed \\
+\includegraphics[height=5.4cm]{fig/download_speed.png}
 \end{itemize}
 \end{frame}
 \begin{frame}{DASH}
@@ -293,13 +359,12 @@ DASH和Wechat, Weishi, Qzone等社交UGC视频转码中存在的问题：
 \item 视频长度较短\\
 一般仅一个到若干个GOP，MapReduce时仅需要一个Mapper
 \item 但MapReduce任务调度的延时较大\\
-有时甚至超过播放时长。可通过Linux Container守护进程的实时MapReduce来缓解，但非根本解决之道
+有时甚至超过播放时长。可通过Linux Container, Docker守护进程的实时MapReduce来缓解，但非根本解决之道
 \item 大部分视频的未来访问少于X次\\
 还有比较全码率转码+全量分发么？
 \end{itemize}
 \end{frame}
-\begin{frame}{Motivation}
-%对大数据的分析，得出结论：
+\begin{frame}{大数据分析，得出结论：}
 \begin{itemize}
 	\item 对数千台后台服务器连续一周运行状态的测量：\\
 		\begin{itemize}
@@ -317,13 +382,39 @@ DASH和Wechat, Weishi, Qzone等社交UGC视频转码中存在的问题：
 	\end{itemize}
 \end{itemize}
 \end{frame}
+\begin{frame}{启发}
+\begin{itemize}
+\item CDN的大部分服务器是否也可用来做转码？\\
+\item 是否可以按需转码，按需分发？\\
+on-line, on-the-fly, on-demand?
+\item 当前CDN节点实在是没有所需码率片段时...\\
+是否可以给一个不高于所需码率的最高码率副本来替代？
+\end{itemize}
+\end{frame}
 
 \begin{frame}{优化问题}
 \begin{itemize}
-\item 选择选择...\\
-to be written...
-\item 稳定稳定匹配\\
-to be written...
+\item 用户重定向\\
+用户当前请求应该被调度到哪个CDN节点来服务？资源应尽量在哪儿转码？服务器负载、带宽利用、用户体验，哪个更重要？
+\item 哪些资源的哪些片段最需要被转码\\
+用户最需要的，能尽量让用户得到最大码率的，当前副本最少的？消耗服务器计算资源少的（节能/碳环保）？
+\item 转码后的片段应当怎样在CDN云中分发\\
+怎样定义分发代价？怎样让代价最小？怎样尽可能不超出购买带宽量？
+\end{itemize}
+\end{frame}
+\begin{frame}{我们的启发式算法}
+\begin{itemize}
+\item 启发式规则和稳定匹配（婚姻）结合
+	\begin{itemize}
+		\item 启发式：用贪心规则给出NP难问题的近似最优解
+		\item 稳定匹配：扩展的稳定婚姻问题\\
+			\begin{itemize}
+					\item 女追男---尽量利于女神\\
+						女：用户；男：CDN边缘节点
+					\item 男方具有多容量
+					\item 稳定性与帕累托效率
+			\end{itemize}
+	\end{itemize}
 \end{itemize}
 \end{frame}
 \begin{frame}{算法应用}
@@ -336,6 +427,33 @@ to be written...
 \item 未来一小段时间服务器的期望空间计算资源\\
 根据分工作日/周末两种自回归模型预测未来一段时间每个OC节点服务器的期望CPU负载
 \end{itemize}
+\end{frame}
+\begin{frame}{整体架构与“女追男”模型}
+\includegraphics[height=5.6cm]{fig/transcoding_delivery.pdf}
+\end{frame}
+\begin{frame}{至关重要：Satisfying Women}
+\includegraphics[height=5.6cm]{fig/massage2.png}
+\end{frame}
+\begin{frame}{效果}
+\begin{itemize}
+\item 44.8\%的用户会享受更高码率的版本\\
+	相比传统服务器负载均衡的算法
+\item 4.5倍的用户享受到最高的可能码率\\
+	相比传统服务器负载均衡的算法
+\item 减少42.2\%接受和当前带宽不匹配码率的可能\\
+	相比传统FIFO（先来先服务）的算法
+\item 减少约80\%的转码计算资源消耗\\
+	对于微视、腾讯视频这种4码率副本的场景。码率副本数越高，效果越明显。（Qzone两码率副本场合，减少约40\%）
+\item 副本传输的带宽不随分段数显著增长\\
+	事实上，当分段数$n$足够大后，随$n$几乎不变了。
+\end{itemize}
+\end{frame}
+\begin{frame}{Publications}
+\begin{center}
+\includegraphics[width=10cm]{fig/infocom.jpg}\\\pause
+Alan Zhuang et al. Joint Online Transcoding and Geo-distributed Delivery for Dynamic Adaptive Streaming. IEEE Transactions on Parallel and Distributed Systems (TPDS). 2014. (will appear)\\\pause
+\includegraphics[width=10cm]{fig/tpds_25yr.jpg}\\\pause
+\end{center}
 \end{frame}
 
 \section{Future Vision}

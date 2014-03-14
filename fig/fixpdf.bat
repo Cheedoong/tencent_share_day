@@ -31,6 +31,6 @@ echo.
 echo                      ☆☆☆☆☆按任意键继续☆☆☆☆☆
 pause
 
-pdfcrop 粒子特效.pdf --pdfversion 1.4
+pdfcrop transcoding_delivery.pdf --pdfversion 1.4
 
 pause

@@ -49,7 +49,7 @@
 \begin{itemize}
 \item Q: 谁拥有以下设备之一？
 	\begin{itemize}
-	\item 小米3联通版、红米1S
+	\item 小米3联通版、红米Note
 	\item 华为荣耀X1、荣耀3X
 	\item 三星Galaxy S4
 	\item Google/LG Nexus 5
@@ -145,7 +145,7 @@ MP4 (ISO/IEC 14496-14; MPEG-4 Part 14).
 \end{itemize}
 \end{frame}
 
-\begin{frame}{解决}
+\begin{frame}{以往的解决：并行与分布式}
 \pause
 Criteria： \pause
 \begin{itemize}
@@ -161,7 +161,7 @@ Criteria： \pause
 	\begin{itemize}
 		\item 存储
 		\item 路由
-		\item 任务调度
+		\item 资源分配、任务调度
 	\end{itemize}
 \end{itemize}
 \end{frame}
@@ -192,6 +192,21 @@ Criteria： \pause
 \includegraphics[width=10cm]{fig/cloud-cache_hardware.png}
 \end{center}
 \end{frame}
+\begin{frame}{评价}
+\begin{itemize}
+	\item 整体上是个设计优秀的系统
+	\item 但还存在一些问题：
+	\begin{itemize}
+		\item 下载、转码、任务分发、任务管理都需要专门的机器资源
+		\item 下载后，数据还需要再次传输到相应的转码机器
+		\item 切片的开销
+		\item 划分的各模块，增加了部署复杂性，限制了可扩展性
+		\item 存储部分依赖NFS，不能支持海量的媒体资源
+		\item 转码完成后，分发是个问题
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
 \subsection{架平流媒体TranscX}
 \begin{frame}{架平流媒体TranscX}
 TranscX: 
@@ -202,8 +217,8 @@ TranscX:
 \includegraphics[scale=0.20]{fig/GOP.pdf}
 \end{center}
 \begin{itemize}
-\item GOP-level parallelism without REAL splitting\\
-Media head parsing, $<begin\_time, end\_time> or GOP\_id \rightarrow <start_offset, size>$
+\item GOP级的并行，不需要真正“切割”\\
+Media head parsing, <begin\_time, end\_time> or GOP\_id $\rightarrow$ <start\_offset, size>
 \end{itemize}
 \end{frame}
 
@@ -252,12 +267,15 @@ Media head parsing, $<begin\_time, end\_time> or GOP\_id \rightarrow <start_offs
 
 \begin{frame}
 \begin{itemize}
-\item Job/Map/Thread, accurate control and CPU \& I/O limitation
-\item Real-time support for DASH and Live Broadcasting
-\item Migration from Computing to Storage: soul of cloud tech
-\item It later supported WeChat, Qzone and Weishi
-\item 用MapReduce框架统一了起来，减少了调度的复杂性，增强了可扩展性
-\item 复用了存储服务器的空间计算资源，节省了成本
+\item Job/Map/Thread三级精确控制，CPU \& I/O limitation\\
+避免影响存储集群的现网服务
+\item 对DASH和实时在线直播的支持
+\item 计算向存储迁移：云计算的理想状态\\
+而且转码工作在存储机器上完成，避免了大部分的数据传输/拷贝，效果接近本地计算
+\item 后来逐步支持了WeChat、Qzone和Weishi
+\item 用MapReduce框架统一了起来，减少了调度的复杂性，增强了可扩展性\\
+通过TFS/CFS分布式文件系统和网络协议，可处理PB级别的媒体资源
+\item 复用存储服务器的空间计算资源，减少碳排放（绿色计算）
 \end{itemize}
 \end{frame}
 
@@ -382,6 +400,10 @@ DASH和Wechat, Weishi, Qzone等社交UGC视频转码中存在的问题：
 	\end{itemize}
 \end{itemize}
 \end{frame}
+\begin{frame}{带宽和CPU使用率示例}
+\includegraphics[height=2.4cm]{fig/bandwidth.png}\\
+\includegraphics[height=3.2cm]{fig/cpu_usage.png}
+\end{frame}
 \begin{frame}{启发}
 \begin{itemize}
 \item CDN的大部分服务器是否也可用来做转码？\\
@@ -451,7 +473,7 @@ on-line, on-the-fly, on-demand?
 \begin{frame}{Publications}
 \begin{center}
 \includegraphics[width=10cm]{fig/infocom.jpg}\\\pause
-Alan Zhuang et al. Joint Online Transcoding and Geo-distributed Delivery for Dynamic Adaptive Streaming. IEEE Transactions on Parallel and Distributed Systems (TPDS). 2014. (will appear)\\\pause
+...Alan Zhuang... Joint Online Transcoding and Geo-distributed Delivery for Dynamic Adaptive Streaming. IEEE Transactions on Parallel and Distributed Systems (TPDS). 2014. (will appear)\\\pause
 \includegraphics[width=10cm]{fig/tpds_25yr.jpg}\\\pause
 \end{center}
 \end{frame}

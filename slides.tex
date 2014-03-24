@@ -45,6 +45,15 @@
 % -----------------------------------------------------------------------------
 \section{背景}
 \subsection{}
+\begin{frame}{简介}
+Alan Zhuang (Cheedoong Ch'ng) \pause
+\begin{itemize}
+\item  前：TEG（技术工程事业群）APD（架构平台部）\\ 流媒体业务组\\
+媒体转码、分发；分布式存储、传输、缓存；DASH
+\item  现：SNG（社交网络事业群）SPD（社交平台部）\\ 框架服务组\\
+WebRTC, PeerAcc, Social  Media
+\end{itemize}
+\end{frame}
 \begin{frame}{互动}
 \begin{itemize}
 \item Q: 谁拥有以下设备之一？
@@ -213,6 +222,7 @@ TranscX:
 \begin{itemize}
 	\item Transcoding eXpress/eXperience/eXtreme...; transc(x)
 \end{itemize}
+\pause
 \begin{center}
 \includegraphics[scale=0.20]{fig/GOP.pdf}
 \end{center}
@@ -372,7 +382,7 @@ DASH: Dynamic Adaptive Streaming over HTTP. \\
 
 \subsection{稳定匹配}
 \begin{frame}{Motivation}
-DASH和Wechat, Weishi, Qzone等社交UGC视频转码中存在的问题：
+DASH和Wechat, Weishi, Qzone等社交UGC视频转码中存在的问题：\pause
 \begin{itemize}
 \item 视频长度较短\\
 一般仅一个到若干个GOP，MapReduce时仅需要一个Mapper
@@ -491,6 +501,17 @@ Client-end caching \& delivery \& broadcasting
 编码、多副本多版本机制、多视角、传输
 \end{itemize}
 \end{frame}
+\begin{frame}{友商的行动--新闻报道}
+\includegraphics[height=1.0cm]{fig/rmw_logo.jpg}
+\includegraphics[height=1.0cm]{fig/xinhua_logo.jpg}
+\includegraphics[height=1.0cm]{fig/huanqiu_logo.jpg}
+\includegraphics[height=1.0cm]{fig/taobao_logo.jpg}\\\pause
+\small{
+继空调之后，电视台成为阿里云计算的下一个大数据重塑目标。3月20日下午，阿里云宣布...打造中国最大的全媒体云计算平台。...在一周内，帮助传统电视台变成多屏网络电视台，支持电脑网站、手机APP、电视机全终端流畅播放，...
+
+阿里云是中国罕有可以将5000台计算机合成一台“超级计算机”的云计算平台，将为全国广播电视媒体提供超级计算、高速存储和网络连接能力，满足其海量视频内容的处理和传播需求。合作伙伴新奥特则负责开发基于云平台的全媒体播控系统，包括采集收录、快编转码、存储管理、多终端视频发布、收视研究等。...，其中包括中央电视台，北京、江苏、浙江、湖南卫视等多家强势电视媒体。
+}
+\end{frame}
 \subsection{Acknowledgment}
 \begin{frame}{Acknowledgment}
 本slides中部分内容源自与以下人员的协作/交流：
@@ -500,7 +521,7 @@ Leon Ouyang, Devin Zeng, Guita Zhang, Kernel He, Chris Su
 \item Tsinghua-Tencent Joint Lab.\\ 
 Zhi Wang
 \item SNG社交平台部\\
-Stone Huang
+Stone Huang, Scorpion Xu, Rizen Guo
 \item NTU\\
 Young Wen
 \end{itemize}

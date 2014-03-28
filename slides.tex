@@ -65,8 +65,7 @@ WebRTC, PeerAcc, Social  Media
 	\item LG G2
 	\item 酷派大神F1/8297、9976A
 	\end{itemize}
-\item  举过手的，恭喜大家！\\
-原因请继续听...
+\item  恭喜！\\
 \end{itemize}
 \end{frame}
 \begin{frame}{多屏时代的挑战}
@@ -276,20 +275,6 @@ Media head parsing, <begin\_time, end\_time> or GOP\_id $\rightarrow$ <start\_of
 \end{frame}
 
 \begin{frame}
-\begin{itemize}
-\item Job/Map/Thread三级精确控制，CPU \& I/O limitation\\
-避免影响存储集群的现网服务
-\item 对DASH和实时在线直播的支持
-\item 计算向存储迁移：云计算的理想状态\\
-而且转码工作在存储机器上完成，避免了大部分的数据传输/拷贝，效果接近本地计算
-\item 后来逐步支持了WeChat、Qzone和Weishi
-\item 用MapReduce框架统一了起来，减少了调度的复杂性，增强了可扩展性\\
-通过TFS/CFS分布式文件系统和网络协议，可处理PB级别的媒体资源
-\item 复用存储服务器的空间计算资源，减少碳排放（绿色计算）
-\end{itemize}
-\end{frame}
-
-\begin{frame}
 \begin{center}
 \includegraphics[height=6.4cm]{fig/TranscX.pdf}
 \end{center}
@@ -300,10 +285,24 @@ Media head parsing, <begin\_time, end\_time> or GOP\_id $\rightarrow$ <start\_of
 \end{center}
 \end{frame}
 
+\begin{frame}
+\begin{itemize}
+\item 怎样避免影响存储集群的现网服务？
+Job/Map/Thread三级精确控制，CPU \& I/O limitation\\
+\item 效率高在哪里？\\
+转码工作在存储机器上完成，减少数据传输，接近本地计算--计算向存储迁移
+\item 架构好在哪里？\\
+MapReduce? TFS/CFS? Protocol? 
+\item 复用存储服务器的空间计算资源，减少碳排放（绿色计算）
+\item WeChat, Qzone, Weishi? 
+\item 对DASH和实时在线直播的支持
+\end{itemize}
+\end{frame}
+
 \section{DASH与稳定婚姻}
 \subsection{DASH}
 \begin{frame}{Why DASH?}
-DASH: Dynamic Adaptive Streaming over HTTP.
+%DASH: Dynamic Adaptive Streaming over HTTP.
 \pause
 \begin{itemize}
 \item 庞大的文件头，导致在线播放时较大的initial/VCR delay
@@ -313,7 +312,7 @@ DASH: Dynamic Adaptive Streaming over HTTP.
 \end{frame}
 \begin{frame}
 \begin{itemize}
-\item 非平滑的码率间切换 due to varying download speed \\
+\item 二次缓冲频繁 due to varying download speed \\
 \includegraphics[height=5.4cm]{fig/download_speed.png}
 \end{itemize}
 \end{frame}
@@ -364,17 +363,17 @@ DASH: Dynamic Adaptive Streaming over HTTP. \\
 \end{itemize}
 \end{frame}
 
-\begin{frame}{架平流媒体对DASH的使用}
+\begin{frame}{原有系统怎么完成DASH改造？架平流媒体经验}
 \begin{itemize}
-\item 尽量只转封装，不转编码
-\item 实时、按需转封装/转码
-\item 使用/自写的多种协议，解决并发I/O流少的问题
+\item 转封装 vs 转编码？\\
+尽量只转封装，不转编码；实时、按需转封装/转码
+\item 并发I/O流少的问题？使用/自写的协议？
 	\begin{description}
 	\item[tmpfs] 最简单、方便，对Cache管理要求不强的场合
 	\item[in\_mem] in memory, 进程内的编解码I/O
 	\item[shm\_mem] shared memory, 多进程的编解码I/O，可自定义Cache管理、淘汰算法
 	\item[AVIOContext] FFMPEG built-in
-	\item[async\_http] 适用直播，数据到达不可预期
+	\item[async\_http] 适用直播，数据到达不可预期 %read frame --> decode --> encode
 \end{description}
 \item FPGA HEVC Encoding (proposed)
 \end{itemize}
@@ -389,7 +388,7 @@ DASH和Wechat, Weishi, Qzone等社交UGC视频转码中存在的问题：\pause
 \item 但MapReduce任务调度的延时较大\\
 有时甚至超过播放时长。可通过Linux Container, Docker守护进程的实时MapReduce来缓解，但非根本解决之道
 \item 大部分视频的未来访问少于X次\\
-还有比较全码率转码+全量分发么？
+还有必要全码率转码+全量分发么？
 \end{itemize}
 \end{frame}
 \begin{frame}{大数据分析，得出结论：}
@@ -405,7 +404,7 @@ DASH和Wechat, Weishi, Qzone等社交UGC视频转码中存在的问题：\pause
 		\begin{itemize}
 		\item 用户对CDN的region选择存在偏好\\
 		由于网络拓扑关系，用户去不同的CDN边缘节点下载的速率各不相同，而目前的调度算法，至少能得到一个次优解
-		\item 不同不同地区的用户对码率存在偏好\\
+		\item 不同地区用户对码率存在偏好\\
 		在前面次优解的前提下，不同地区得到平均服务质量有差异
 	\end{itemize}
 \end{itemize}
@@ -436,15 +435,18 @@ on-line, on-the-fly, on-demand?
 \end{frame}
 \begin{frame}{我们的启发式算法}
 \begin{itemize}
+\item 联合考虑转码和分发，再多阶段优化
+\item 三个扩展的0-1背包问题
+\item 用户--服务器--码率副本？ ---调度/匹配？
 \item 启发式规则和稳定匹配（婚姻）结合
 	\begin{itemize}
-		\item 启发式：用贪心规则给出NP难问题的近似最优解
+		\item 启发式：设计出贪心规则给出NP难问题的近似最优解
 		\item 稳定匹配：扩展的稳定婚姻问题\\
 			\begin{itemize}
 					\item 女追男---尽量利于女神\\
 						女：用户；男：CDN边缘节点
 					\item 男方具有多容量
-					\item 稳定性与帕累托效率
+					\item 稳定性、最优性与帕累托效率
 			\end{itemize}
 	\end{itemize}
 \end{itemize}
@@ -453,11 +455,11 @@ on-line, on-the-fly, on-demand?
 准备与预测框架\\
 \begin{itemize}
 \item 用户对所有CDN边缘节点的偏好\\
-根据过去的测速数据来Rank用户对所有CDN边缘节点的偏好
+过去的测速数据$\rightarrow$Rank用户对所有CDN边缘节点的偏好
 \item 每段视频未来一段时间的访问频率\\
-根据CDN到用户的带宽和过去一段时间用户的访问频次预测未来一段时间所有有可能有访问的视频的访问频次
+过去访问频次\&幂律分布\&指数衰减$\rightarrow$未来一段时间所有有可能有访问的视频的访问频次
 \item 未来一小段时间服务器的期望空间计算资源\\
-根据分工作日/周末两种自回归模型预测未来一段时间每个OC节点服务器的期望CPU负载
+工作日/周末自回归模型$\rightarrow$未来一段时间每个OC节点服务器的期望CPU负载
 \end{itemize}
 \end{frame}
 \begin{frame}{整体架构与“女追男”模型}
@@ -471,7 +473,7 @@ on-line, on-the-fly, on-demand?
 \item 44.8\%的用户会享受更高码率的版本\\
 	相比传统服务器负载均衡的算法
 \item 4.5倍的用户享受到最高的可能码率\\
-	相比传统服务器负载均衡的算法
+	%相比传统服务器负载均衡的算法
 \item 减少42.2\%接受和当前带宽不匹配码率的可能\\
 	相比传统FIFO（先来先服务）的算法
 \item 减少约80\%的转码计算资源消耗\\
@@ -483,7 +485,7 @@ on-line, on-the-fly, on-demand?
 \begin{frame}{Publications}
 \begin{center}
 \includegraphics[width=10cm]{fig/infocom.jpg}\\\pause
-...Alan Zhuang... Joint Online Transcoding and Geo-distributed Delivery for Dynamic Adaptive Streaming. IEEE Transactions on Parallel and Distributed Systems (TPDS). 2014. (will appear)\\\pause
+...alanzhuang... Joint Online Transcoding and Geo-distributed Delivery for Dynamic Adaptive Streaming. IEEE Transactions on Parallel and Distributed Systems (TPDS). 2014. (will appear)\\\pause
 \includegraphics[width=10cm]{fig/tpds_25yr.jpg}\\\pause
 \end{center}
 \end{frame}
@@ -507,10 +509,13 @@ Client-end caching \& delivery \& broadcasting
 \includegraphics[height=1.0cm]{fig/huanqiu_logo.jpg}
 \includegraphics[height=1.0cm]{fig/taobao_logo.jpg}\\\pause
 \small{
-继空调之后，电视台成为阿里云计算的下一个大数据重塑目标。3月20日下午，阿里云宣布...打造中国最大的全媒体云计算平台。...在一周内，帮助传统电视台变成多屏网络电视台，支持电脑网站、手机APP、电视机全终端流畅播放，...
+继空调之后，电视台成为阿里云计算的下一个大数据重塑目标。2014年3月20日下午，阿里云宣布...打造中国最大的全媒体云计算平台。...在一周内，帮助传统电视台变成多屏网络电视台，支持电脑网站、手机APP、电视机全终端流畅播放，...
 
 阿里云是中国罕有可以将5000台计算机合成一台“超级计算机”的云计算平台，将为全国广播电视媒体提供超级计算、高速存储和网络连接能力，满足其海量视频内容的处理和传播需求。合作伙伴新奥特则负责开发基于云平台的全媒体播控系统，包括采集收录、快编转码、存储管理、多终端视频发布、收视研究等。...，其中包括中央电视台，北京、江苏、浙江、湖南卫视等多家强势电视媒体。
 }
+\end{frame}
+\begin{frame}
+\includegraphics[height=7.6cm]{fig/tengyun.jpg}
 \end{frame}
 \subsection{Acknowledgment}
 \begin{frame}{Acknowledgment}

@@ -287,12 +287,12 @@ Media head parsing, <begin\_time, end\_time> or GOP\_id $\rightarrow$ <start\_of
 
 \begin{frame}
 \begin{itemize}
-\item 怎样避免影响存储集群的现网服务？
-Job/Map/Thread三级精确控制，CPU \& I/O limitation\\
+\item 怎样避免影响存储集群的现网服务？\\
+Job/Map/Thread三级精确控制，CPU \& I/O limitation
 \item 效率高在哪里？\\
 转码工作在存储机器上完成，减少数据传输，接近本地计算--计算向存储迁移
 \item 架构好在哪里？\\
-MapReduce? TFS/CFS? Protocol? 
+MapReduce(Typhoon)? TFS/CFS? Protocol? 
 \item 复用存储服务器的空间计算资源，减少碳排放（绿色计算）
 \item WeChat, Qzone, Weishi? 
 \item 对DASH和实时在线直播的支持
@@ -438,6 +438,14 @@ on-line, on-the-fly, on-demand?
 \item 联合考虑转码和分发，再多阶段优化
 \item 三个扩展的0-1背包问题
 \item 用户--服务器--码率副本？ ---调度/匹配？
+\includegraphics[height=2.7cm]{fig/wenzhang_mayili.jpg}\pause
+\includegraphics[height=2.7cm]{fig/yaodi_chishuai1.jpg}\pause
+\includegraphics[height=2.7cm]{fig/yaodi_chishuai.jpg}\pause
+\includegraphics[height=2.7cm]{fig/wenzhang_yaodi.jpg}
+\end{itemize}
+\end{frame}
+\begin{frame}{我们的启发式算法}
+\begin{itemize}
 \item 启发式规则和稳定匹配（婚姻）结合
 	\begin{itemize}
 		\item 启发式：设计出贪心规则给出NP难问题的近似最优解
@@ -451,6 +459,7 @@ on-line, on-the-fly, on-demand?
 	\end{itemize}
 \end{itemize}
 \end{frame}
+
 \begin{frame}{算法应用}
 准备与预测框架\\
 \begin{itemize}
@@ -509,13 +518,15 @@ Client-end caching \& delivery \& broadcasting
 \includegraphics[height=1.0cm]{fig/huanqiu_logo.jpg}
 \includegraphics[height=1.0cm]{fig/taobao_logo.jpg}\\\pause
 \small{
-继空调之后，电视台成为阿里云计算的下一个大数据重塑目标。2014年3月20日下午，阿里云宣布...打造中国最大的全媒体云计算平台。...在一周内，帮助传统电视台变成多屏网络电视台，支持电脑网站、手机APP、电视机全终端流畅播放，...
+继空调之后，电视台成为XX云计算的下一个大数据重塑目标。2014年3月20日下午，XX云宣布...打造中国最大的全媒体云计算平台。...在一周内，帮助传统电视台变成多屏网络电视台，支持电脑网站、手机APP、电视机全终端流畅播放，...
 
-阿里云是中国罕有可以将5000台计算机合成一台“超级计算机”的云计算平台，将为全国广播电视媒体提供超级计算、高速存储和网络连接能力，满足其海量视频内容的处理和传播需求。合作伙伴新奥特则负责开发基于云平台的全媒体播控系统，包括采集收录、快编转码、存储管理、多终端视频发布、收视研究等。...，其中包括中央电视台，北京、江苏、浙江、湖南卫视等多家强势电视媒体。
+XX云是中国罕有可以将5000台计算机合成一台“超级计算机”的云计算平台，将为全国广播电视媒体提供超级计算、高速存储和网络连接能力，满足其海量视频内容的处理和传播需求。合作伙伴新奥特则负责开发基于云平台的全媒体播控系统，包括采集收录、快编转码、存储管理、多终端视频发布、收视研究等。...，其中包括中央电视台，北京、江苏、浙江、湖南卫视等多家强势电视媒体。
 }
 \end{frame}
 \begin{frame}
+\begin{center}
 \includegraphics[height=7.6cm]{fig/tengyun.jpg}
+\end{center}
 \end{frame}
 \subsection{Acknowledgment}
 \begin{frame}{Acknowledgment}

@@ -131,9 +131,9 @@ H.264(AVC), H.265(HEVC), VC-1, AVS, VP8/9, RealVideo...
 \pause
 \begin{itemize}
 \item 编码标准\\ \pause
-H.264/AVC (ISO/IEC 14496-10;  ITU-T H.264; MPEG-4 Part 10).
+\small{H.264/AVC (ISO/IEC 14496-10;  ITU-T H.264; MPEG-4 Part 10).}
 \item 封装容器\\ \pause
-MP4 (ISO/IEC 14496-14; MPEG-4 Part 14).
+\small{MP4 (ISO/IEC 14496-14; MPEG-4 Part 14).}
 \end{itemize}
 \pause
 所以，我们需要把用户/编辑上传的各种不同封装、不同编码的，一般码率比较高的源视频转成若干种适合不同设备的不同码率的H.264编码、MP4封装的视频。
@@ -153,24 +153,22 @@ MP4 (ISO/IEC 14496-14; MPEG-4 Part 14).
 \end{itemize}
 \end{frame}
 
-\begin{frame}{以往的解决：并行与分布式}
-\pause
-Criteria： \pause
+\begin{frame}{以往的解决：并行与分布式（Criteria）}
 \begin{itemize}
 \item 单机内\\
 	\begin{itemize}
-	\item 功能划分、数据局部性\\
-	宏块组粒度的并行
-	\item 内存访问、CPU核心/Cache拓扑结构和转码格式\\
-	帧级或GOP（图像组）级并行\\
-	对NUMA机器特别友好
+	\item 宏块组/帧级并行
+	\item SMP/NUMA友好
+	\item SIMD (SSE2, SSE4, AVX...)
+	\item CPU $\rightarrow$ GPU (QuickSync, CUDA, APP...)
 	\end{itemize}
 \item 分布式转码
 	\begin{itemize}
-		\item 存储
-		\item 路由
+		\item 分布式存储
+		\item 网络传输
 		\item 资源分配、任务调度
 	\end{itemize}
+\item Enough???
 \end{itemize}
 \end{frame}
 
@@ -207,7 +205,7 @@ Criteria： \pause
 	\begin{itemize}
 		\item 下载、转码、任务分发、任务管理都需要专门的机器资源
 		\item 下载后，数据还需要再次传输到相应的转码机器
-		\item 切片的开销
+		\item 做切片的开销
 		\item 划分的各模块，增加了部署复杂性，限制了可扩展性
 		\item 存储部分依赖NFS，不能支持海量的媒体资源
 		\item 转码完成后，分发是个问题
@@ -287,7 +285,7 @@ Media head parsing, <begin\_time, end\_time> or GOP\_id $\rightarrow$ <start\_of
 
 \begin{frame}
 \begin{itemize}
-\item 怎样避免影响存储集群的现网服务？\\
+\item 避免影响存储集群的现网服务？\\
 Job/Map/Thread三级精确控制，CPU \& I/O limitation
 \item 效率高在哪里？\\
 转码工作在存储机器上完成，减少数据传输，接近本地计算--计算向存储迁移
@@ -380,13 +378,13 @@ DASH: Dynamic Adaptive Streaming over HTTP. \\
 \end{frame}
 
 \subsection{稳定匹配}
-\begin{frame}{Motivation}
-DASH和Wechat, Weishi, Qzone等社交UGC视频转码中存在的问题：\pause
+\begin{frame}{新的问题}
+DASH和WeChat, Weishi, Qzone等社交UGC视频转码中存在的问题：\pause
 \begin{itemize}
 \item 视频长度较短\\
-一般仅一个到若干个GOP，MapReduce时仅需要一个Mapper
+一般仅一个到若干个GOP，MapReduce时仅需要一个Mapper，不需要Reducer
 \item 但MapReduce任务调度的延时较大\\
-有时甚至超过播放时长。可通过Linux Container, Docker守护进程的实时MapReduce来缓解，但非根本解决之道
+有时甚至超过播放时长。可通过LXC, Docker守护进程的实时In-memory MapReduce来缓解，但非根本解决之道
 \item 大部分视频的未来访问少于X次\\
 还有必要全码率转码+全量分发么？
 \end{itemize}
@@ -437,7 +435,7 @@ on-line, on-the-fly, on-demand?
 \begin{itemize}
 \item 联合考虑转码和分发，再多阶段优化
 \item 三个扩展的0-1背包问题
-\item 用户--服务器--码率副本？ ---调度/匹配？
+\item 用户--服务器--码率副本？ ---调度/匹配？\pause
 \includegraphics[height=2.7cm]{fig/wenzhang_mayili.jpg}\pause
 \includegraphics[height=2.7cm]{fig/yaodi_chishuai1.jpg}\pause
 \includegraphics[height=2.7cm]{fig/yaodi_chishuai.jpg}\pause
@@ -499,7 +497,7 @@ on-line, on-the-fly, on-demand?
 \end{center}
 \end{frame}
 
-\section{Future Vision}
+\section{Future Vision \& Others}
 \subsection{和一些新技术的结合}
 \begin{frame}{和一些新技术的结合}
 \begin{itemize}
@@ -508,7 +506,7 @@ Client-end caching \& delivery \& broadcasting
 \item HTML5 WebSocket, HTTP 2.0\\
 会话保持，多流传输
 \item Social Could TV\\
-\item SVC, MVC, HEVC, NC\\
+\item HEVC, SVC, MVC, NC\\
 编码、多副本多版本机制、多视角、传输
 \end{itemize}
 \end{frame}
@@ -530,7 +528,7 @@ XX云是中国罕有可以将5000台计算机合成一台“超级计算机”�
 \end{frame}
 \subsection{Acknowledgment}
 \begin{frame}{Acknowledgment}
-本slides中部分内容源自与以下人员的协作/交流：
+本slide中部分内容源自与以下人员的协作/交流：
 \begin{itemize}
 \item 架平流媒体\\
 Leon Ouyang, Devin Zeng, Guita Zhang, Kernel He, Chris Su
@@ -538,9 +536,14 @@ Leon Ouyang, Devin Zeng, Guita Zhang, Kernel He, Chris Su
 Zhi Wang
 \item SNG社交平台部\\
 Stone Huang, Scorpion Xu, Rizen Guo
-\item NTU\\
+\item Nanyang Technological University\\
 Young Wen
 \end{itemize}
+\end{frame}
+\begin{frame}{Q/A?}
+\begin{center}
+\includegraphics[height=6.0cm]{fig/tengyun.jpg}
+\end{center}
 \end{frame}
 % -----------------------------------------------------------------------------
 \end{document}

@@ -9,6 +9,8 @@
 \usepackage{url} 
 \usepackage{hyperref} 
 \usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{array}
 
 \usetheme{Berlin}
 %\usecolortheme{mit}
@@ -136,7 +138,14 @@ H.264(AVC), H.265(HEVC), VC-1, AVS, VP8/9, RealVideo...
 \small{MP4 (ISO/IEC 14496-14; MPEG-4 Part 14).}
 \end{itemize}
 \pause
-所以，我们需要把用户/编辑上传的各种不同封装、不同编码的，一般码率比较高的源视频转成若干种适合不同设备的不同码率的H.264编码、MP4封装的视频。
+
+$ Source \rightarrow [~ MP4, H.264, AAC ~]\left\{
+\begin{array}{ccc}
+version_1       &      & {(x_1 ~ kbps)}\\
+version_2     &      & {(x_2 ~ kbps)}\\
+\vdots     &      & {\vdots}\\
+version_n       &      & {(x_n ~ kbps)}
+\end{array} \right. $
 \end{frame}
 \begin{frame}{但是，}
 \pause
@@ -291,7 +300,7 @@ Job/Map/Thread三级精确控制，CPU \& I/O limitation
 转码工作在存储机器上完成，减少数据传输，接近本地计算--计算向存储迁移
 \item 架构好在哪里？\\
 MapReduce(Typhoon)? TFS/CFS? Protocol? 
-\item 复用存储服务器的空间计算资源，减少碳排放（绿色计算）
+\item 复用存储服务器的空闲计算资源，减少碳排放（绿色计算）
 \item WeChat, Qzone, Weishi? 
 \item 对DASH和实时在线直播的支持
 \end{itemize}
@@ -383,8 +392,8 @@ DASH和WeChat, Weishi, Qzone等社交UGC视频转码中存在的问题：\pause
 \begin{itemize}
 \item 视频长度较短\\
 一般仅一个到若干个GOP，MapReduce时仅需要一个Mapper，不需要Reducer
-\item 但MapReduce任务调度的延时较大\\
-有时甚至超过播放时长。可通过LXC, Docker守护进程的实时In-memory MapReduce来缓解，但非根本解决之道
+\item MapReduce任务调度延时较大，甚至超播放时长\\
+可通过批量提交或LXC, Docker守护进程的实时In-memory MapReduce来缓解，但非根本解决之道
 \item 大部分视频的未来访问少于X次\\
 还有必要全码率转码+全量分发么？
 \end{itemize}
@@ -464,9 +473,9 @@ on-line, on-the-fly, on-demand?
 \item 用户对所有CDN边缘节点的偏好\\
 过去的测速数据$\rightarrow$Rank用户对所有CDN边缘节点的偏好
 \item 每段视频未来一段时间的访问频率\\
-过去访问频次\&幂律分布\&指数衰减$\rightarrow$未来一段时间所有有可能有访问的视频的访问频次
+过去访问频次\&幂律分布\&指数衰减\&传播模式$\rightarrow$未来一段时间所有有可能有访问的视频的访问频次
 \item 未来一小段时间服务器的期望空间计算资源\\
-工作日/周末自回归模型$\rightarrow$未来一段时间每个OC节点服务器的期望CPU负载
+工作日/周末自回归模型\&短时线性回归$\rightarrow$未来一段时间每个OC节点服务器的期望CPU负载
 \end{itemize}
 \end{frame}
 \begin{frame}{整体架构与“女追男”模型}
@@ -531,7 +540,7 @@ XX云是中国罕有可以将5000台计算机合成一台“超级计算机”�
 本slide中部分内容源自与以下人员的协作/交流：
 \begin{itemize}
 \item 架平流媒体\\
-Leon Ouyang, Devin Zeng, Guita Zhang, Kernel He, Chris Su
+Leon, Devin, Guita, Wood, Kernel, Chris
 \item Tsinghua-Tencent Joint Lab.\\ 
 Zhi Wang
 \item SNG社交平台部\\
@@ -540,7 +549,7 @@ Stone Huang, Scorpion Xu, Rizen Guo
 Young Wen
 \end{itemize}
 \end{frame}
-\begin{frame}{Q/A?}
+\begin{frame}{Q\&A?}
 \begin{center}
 \includegraphics[height=6.0cm]{fig/tengyun.jpg}
 \end{center}

@@ -393,7 +393,7 @@ DASH和WeChat, Weishi, Qzone等社交UGC视频转码中存在的问题：\pause
 \item 视频长度较短\\
 一般仅一个到若干个GOP，MapReduce时仅需要一个Mapper，不需要Reducer
 \item MapReduce任务调度延时较大，甚至超播放时长\\
-可通过批量提交或LXC, Docker守护进程的实时In-memory MapReduce来缓解，但非根本解决之道
+可通过批量提交或LXC, Docker守护进程的实时In-memory MapReduce来缓解，但非根本解决之道；常驻内存必要性？
 \item 大部分视频的未来访问少于X次\\
 还有必要全码率转码+全量分发么？
 \end{itemize}
